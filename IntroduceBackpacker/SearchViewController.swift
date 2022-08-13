@@ -19,6 +19,8 @@ class SearchViewController: UIViewController {
         textField.leftViewMode = .always
         textField.placeholder = "App ID를 입력해주세요."
         textField.keyboardType = .numbersAndPunctuation
+        //TODO: 제출 전 꼭 지우기
+        textField.text = "872469884"
         return textField
     }()
     //검색 버튼

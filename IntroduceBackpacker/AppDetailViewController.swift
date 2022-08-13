@@ -30,8 +30,7 @@ class AppDetailViewController: UIViewController {
         // Do any additional setup after loading the view.
         print(responseData)
         setUI()
-        tableView.delegate = self
-        tableView.dataSource = self
+        configurationTableView()
         
     }
     
@@ -58,6 +57,12 @@ class AppDetailViewController: UIViewController {
                                      tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
                                      tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)])
     }
+    
+    func configurationTableView() {
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.register(BriefInformationTableViewCell.self, forCellReuseIdentifier: BriefInformationTableViewCell.identifier)
+    }
 }
 
 
@@ -67,15 +72,13 @@ extension AppDetailViewController: UITableViewDelegate, UITableViewDataSource {
         return 1
     }
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1
+        return 2
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = UITableViewCell()
-        cell.backgroundColor = .green
-        cell.frame.size.height = 100
-        return cell
+        let dummyCell = UITableViewCell()
+        let cell = tableView.dequeueReusableCell(withIdentifier: BriefInformationTableViewCell.identifier) as? BriefInformationTableViewCell
+        cell?.configuration(imageUrl: responseData.results[0].artworkUrl512, trackName: responseData.results[0].trackName, imageHeight: 150)
+        return cell ?? dummyCell
     }
-    
-    
 }
