@@ -128,18 +128,11 @@ class BriefInformationTableViewCell: UITableViewCell {
         openButton.widthAnchor.constraint(equalToConstant: openButtonOrizinalSize.width + (openButtonWidthPadding * 2)).isActive = true
         openButton.heightAnchor.constraint(equalToConstant: openButtonOrizinalSize.height + (openButtonHeightPadding * 2)).isActive = true
         
-        
     }
 
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
 
-        // Configure the view for the selected state
-    }
-    
     func configuration(imageUrl: String, trackName: String, trackId: Int, developerName: String, imageHeight: CGFloat) {
         
-        //do something...
         imageDownload(urlString: imageUrl)
         appTrackNameLabel.text = trackName
         developerNameLabel.text = developerName

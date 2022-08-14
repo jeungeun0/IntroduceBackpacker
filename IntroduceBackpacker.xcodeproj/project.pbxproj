@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8CB97D9B28A902F5007866DE /* SummaryInformationTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CB97D9A28A902F5007866DE /* SummaryInformationTableViewCell.swift */; };
+		8CB97D9D28A90449007866DE /* SummaryInformationCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CB97D9C28A90449007866DE /* SummaryInformationCollectionViewCell.swift */; };
 		8CD09D5728A6C0940094000E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CD09D5628A6C0940094000E /* AppDelegate.swift */; };
 		8CD09D5928A6C0940094000E /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CD09D5828A6C0940094000E /* SceneDelegate.swift */; };
 		8CD09D5B28A6C0940094000E /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CD09D5A28A6C0940094000E /* SearchViewController.swift */; };
@@ -43,6 +45,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		8CB97D9A28A902F5007866DE /* SummaryInformationTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SummaryInformationTableViewCell.swift; sourceTree = "<group>"; };
+		8CB97D9C28A90449007866DE /* SummaryInformationCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SummaryInformationCollectionViewCell.swift; sourceTree = "<group>"; };
 		8CD09D5328A6C0940094000E /* IntroduceBackpacker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = IntroduceBackpacker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8CD09D5628A6C0940094000E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		8CD09D5828A6C0940094000E /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -152,6 +156,8 @@
 			isa = PBXGroup;
 			children = (
 				8CD09D9328A717850094000E /* BriefInformationTableViewCell.swift */,
+				8CB97D9A28A902F5007866DE /* SummaryInformationTableViewCell.swift */,
+				8CB97D9C28A90449007866DE /* SummaryInformationCollectionViewCell.swift */,
 			);
 			path = AppDetailTableViewCell;
 			sourceTree = "<group>";
@@ -294,6 +300,8 @@
 				8CD09D8928A6D49E0094000E /* Util.swift in Sources */,
 				8CD09D9428A717850094000E /* BriefInformationTableViewCell.swift in Sources */,
 				8CD09D5928A6C0940094000E /* SceneDelegate.swift in Sources */,
+				8CB97D9B28A902F5007866DE /* SummaryInformationTableViewCell.swift in Sources */,
+				8CB97D9D28A90449007866DE /* SummaryInformationCollectionViewCell.swift in Sources */,
 				8CD09D8728A6C8B20094000E /* IntroViewController.swift in Sources */,
 				8CD09D8D28A700860094000E /* API.swift in Sources */,
 				8CD09D8F28A7008F0094000E /* Model.swift in Sources */,
