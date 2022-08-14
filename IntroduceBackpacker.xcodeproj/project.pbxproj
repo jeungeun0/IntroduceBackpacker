@@ -10,6 +10,11 @@
 		8CB97D9B28A902F5007866DE /* SummaryInformationTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CB97D9A28A902F5007866DE /* SummaryInformationTableViewCell.swift */; };
 		8CB97D9D28A90449007866DE /* SummaryInformationCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CB97D9C28A90449007866DE /* SummaryInformationCollectionViewCell.swift */; };
 		8CB97D9F28A91FDF007866DE /* HeaderViewOfAppDetailTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CB97D9E28A91FDF007866DE /* HeaderViewOfAppDetailTableView.swift */; };
+		8CB97DA528A94063007866DE /* NewFeaturesTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CB97DA428A94063007866DE /* NewFeaturesTableViewCell.swift */; };
+		8CB97DA728A95726007866DE /* PreviewTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CB97DA628A95726007866DE /* PreviewTableViewCell.swift */; };
+		8CB97DA928A95AA1007866DE /* PreviewCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CB97DA828A95AA1007866DE /* PreviewCollectionViewCell.swift */; };
+		8CB97DAC28A95BB5007866DE /* UIImageViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CB97DAB28A95BB5007866DE /* UIImageViewExtension.swift */; };
+		8CB97DB028A965EB007866DE /* UIImageExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CB97DAF28A965EB007866DE /* UIImageExtension.swift */; };
 		8CD09D5728A6C0940094000E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CD09D5628A6C0940094000E /* AppDelegate.swift */; };
 		8CD09D5928A6C0940094000E /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CD09D5828A6C0940094000E /* SceneDelegate.swift */; };
 		8CD09D5B28A6C0940094000E /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CD09D5A28A6C0940094000E /* SearchViewController.swift */; };
@@ -49,6 +54,11 @@
 		8CB97D9A28A902F5007866DE /* SummaryInformationTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SummaryInformationTableViewCell.swift; sourceTree = "<group>"; };
 		8CB97D9C28A90449007866DE /* SummaryInformationCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SummaryInformationCollectionViewCell.swift; sourceTree = "<group>"; };
 		8CB97D9E28A91FDF007866DE /* HeaderViewOfAppDetailTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderViewOfAppDetailTableView.swift; sourceTree = "<group>"; };
+		8CB97DA428A94063007866DE /* NewFeaturesTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewFeaturesTableViewCell.swift; sourceTree = "<group>"; };
+		8CB97DA628A95726007866DE /* PreviewTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewTableViewCell.swift; sourceTree = "<group>"; };
+		8CB97DA828A95AA1007866DE /* PreviewCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewCollectionViewCell.swift; sourceTree = "<group>"; };
+		8CB97DAB28A95BB5007866DE /* UIImageViewExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImageViewExtension.swift; sourceTree = "<group>"; };
+		8CB97DAF28A965EB007866DE /* UIImageExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImageExtension.swift; sourceTree = "<group>"; };
 		8CD09D5328A6C0940094000E /* IntroduceBackpacker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = IntroduceBackpacker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8CD09D5628A6C0940094000E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		8CD09D5828A6C0940094000E /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -96,6 +106,49 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		8CB97DA028A93F7E007866DE /* AppDetail */ = {
+			isa = PBXGroup;
+			children = (
+				8CD09D9028A70B7B0094000E /* AppDetailViewController.swift */,
+				8CB97DA128A93F96007866DE /* View */,
+				8CD09D9228A717100094000E /* Cell */,
+			);
+			path = AppDetail;
+			sourceTree = "<group>";
+		};
+		8CB97DA128A93F96007866DE /* View */ = {
+			isa = PBXGroup;
+			children = (
+				8CB97D9E28A91FDF007866DE /* HeaderViewOfAppDetailTableView.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		8CB97DA228A93FB0007866DE /* Intro */ = {
+			isa = PBXGroup;
+			children = (
+				8CD09D8628A6C8B20094000E /* IntroViewController.swift */,
+			);
+			path = Intro;
+			sourceTree = "<group>";
+		};
+		8CB97DA328A93FBB007866DE /* Search */ = {
+			isa = PBXGroup;
+			children = (
+				8CD09D5A28A6C0940094000E /* SearchViewController.swift */,
+			);
+			path = Search;
+			sourceTree = "<group>";
+		};
+		8CB97DAA28A95B90007866DE /* Extension */ = {
+			isa = PBXGroup;
+			children = (
+				8CB97DAB28A95BB5007866DE /* UIImageViewExtension.swift */,
+				8CB97DAF28A965EB007866DE /* UIImageExtension.swift */,
+			);
+			path = Extension;
+			sourceTree = "<group>";
+		};
 		8CD09D4A28A6C0940094000E = {
 			isa = PBXGroup;
 			children = (
@@ -119,16 +172,16 @@
 		8CD09D5528A6C0940094000E /* IntroduceBackpacker */ = {
 			isa = PBXGroup;
 			children = (
+				8CB97DAA28A95B90007866DE /* Extension */,
 				8CD09D5628A6C0940094000E /* AppDelegate.swift */,
 				8CD09D5828A6C0940094000E /* SceneDelegate.swift */,
 				8CD09D8828A6D49E0094000E /* Util.swift */,
 				8CD09D8A28A6E51C0094000E /* Global.swift */,
 				8CD09D8C28A700860094000E /* API.swift */,
 				8CD09D8E28A7008F0094000E /* Model.swift */,
-				8CD09D8628A6C8B20094000E /* IntroViewController.swift */,
-				8CD09D5A28A6C0940094000E /* SearchViewController.swift */,
-				8CD09D9028A70B7B0094000E /* AppDetailViewController.swift */,
-				8CD09D9228A717100094000E /* AppDetailTableViewCell */,
+				8CB97DA228A93FB0007866DE /* Intro */,
+				8CB97DA328A93FBB007866DE /* Search */,
+				8CB97DA028A93F7E007866DE /* AppDetail */,
 				8CD09D5C28A6C0940094000E /* Main.storyboard */,
 				8CD09D5F28A6C0960094000E /* Assets.xcassets */,
 				8CD09D6128A6C0960094000E /* LaunchScreen.storyboard */,
@@ -154,15 +207,17 @@
 			path = IntroduceBackpackerUITests;
 			sourceTree = "<group>";
 		};
-		8CD09D9228A717100094000E /* AppDetailTableViewCell */ = {
+		8CD09D9228A717100094000E /* Cell */ = {
 			isa = PBXGroup;
 			children = (
 				8CD09D9328A717850094000E /* BriefInformationTableViewCell.swift */,
 				8CB97D9A28A902F5007866DE /* SummaryInformationTableViewCell.swift */,
 				8CB97D9C28A90449007866DE /* SummaryInformationCollectionViewCell.swift */,
-				8CB97D9E28A91FDF007866DE /* HeaderViewOfAppDetailTableView.swift */,
+				8CB97DA428A94063007866DE /* NewFeaturesTableViewCell.swift */,
+				8CB97DA628A95726007866DE /* PreviewTableViewCell.swift */,
+				8CB97DA828A95AA1007866DE /* PreviewCollectionViewCell.swift */,
 			);
-			path = AppDetailTableViewCell;
+			path = Cell;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -299,6 +354,10 @@
 				8CD09D9128A70B7B0094000E /* AppDetailViewController.swift in Sources */,
 				8CD09D5B28A6C0940094000E /* SearchViewController.swift in Sources */,
 				8CB97D9F28A91FDF007866DE /* HeaderViewOfAppDetailTableView.swift in Sources */,
+				8CB97DA928A95AA1007866DE /* PreviewCollectionViewCell.swift in Sources */,
+				8CB97DA728A95726007866DE /* PreviewTableViewCell.swift in Sources */,
+				8CB97DB028A965EB007866DE /* UIImageExtension.swift in Sources */,
+				8CB97DA528A94063007866DE /* NewFeaturesTableViewCell.swift in Sources */,
 				8CD09D5728A6C0940094000E /* AppDelegate.swift in Sources */,
 				8CD09D8B28A6E51C0094000E /* Global.swift in Sources */,
 				8CD09D8928A6D49E0094000E /* Util.swift in Sources */,
@@ -306,6 +365,7 @@
 				8CD09D5928A6C0940094000E /* SceneDelegate.swift in Sources */,
 				8CB97D9B28A902F5007866DE /* SummaryInformationTableViewCell.swift in Sources */,
 				8CB97D9D28A90449007866DE /* SummaryInformationCollectionViewCell.swift in Sources */,
+				8CB97DAC28A95BB5007866DE /* UIImageViewExtension.swift in Sources */,
 				8CD09D8728A6C8B20094000E /* IntroViewController.swift in Sources */,
 				8CD09D8D28A700860094000E /* API.swift in Sources */,
 				8CD09D8F28A7008F0094000E /* Model.swift in Sources */,

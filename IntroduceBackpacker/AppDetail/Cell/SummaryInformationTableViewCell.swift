@@ -18,21 +18,21 @@ class SummaryInformationTableViewCell: UITableViewCell {
     }
     
     let collectionView: UICollectionView = {
-            
-            let layout = UICollectionViewFlowLayout()
-            layout.minimumLineSpacing = 10
-            
-            layout.scrollDirection = .horizontal
-            layout.sectionInset = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 0)
+        
+        let layout = UICollectionViewFlowLayout()
+        layout.minimumLineSpacing = 10
+        
+        layout.scrollDirection = .horizontal
+        layout.sectionInset = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 0)
         
         layout.estimatedItemSize = CGSize(width: 100, height: 100)
         layout.itemSize = CGSize(width: 100, height: 100)
-           
-            let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        
+        let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
         cv.translatesAutoresizingMaskIntoConstraints = false
         cv.showsHorizontalScrollIndicator = false
-            return cv
-        }()
+        return cv
+    }()
     
     var collectionViewHeightConstraint: NSLayoutConstraint!
     var summaryData: [SummaryData] = []

@@ -12,47 +12,57 @@ class AppDetailViewController: UIViewController {
     //section과 순서
     enum Section: Int {
         case SummaryInfo = 0
-        case NewFunction = 1
+        case NewFeatures = 1
         case PreView = 2
     }
     
+    enum SectionName: String {
+        case SummaryInfo
+        case NewFeatures = "새로운 기능"
+        case PreView = "미리보기"
+    }
+    
+    //app data
     let responseData: Response
-    //section과 row 개수
-    var sectionAndRow: [Section: Int] = [:]
+    
+    //section정보
+    typealias OpenAndFold = (open:Int, fold: Int, isOpen: Bool)
+    var sectionAndRow: [Section: OpenAndFold] = [:]
+    var sectionName: [Section: SectionName] = [:]
     
     var tableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .grouped)
         return tableView
     }()
     
+    
+    
     init?(responseData: Response, coder: NSCoder) {
         self.responseData = responseData
         super.init(coder: coder)
     }
     
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
         print(responseData)
         setUI()
         configurationTableView()
         
     }
     
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.navigationBar.isHidden = false
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-//        self.navigationController?.navigationBar.backItem?.title = "검색"
-    }
     
     func setUI() {
         view.addSubview(tableView)
@@ -68,45 +78,56 @@ class AppDetailViewController: UIViewController {
                                      tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)])
     }
     
+    
     func configurationTableView() {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.isUserInteractionEnabled = true
-//        tableView.contentInset = .init(top: -100, left: 0, bottom: 0, right: 0)
-//        tableView.contentInsetAdjustmentBehavior = .never
         tableView.tableFooterView = .init(frame: .zero)
         tableView.sectionFooterHeight = 0
+        
+        //register
         tableView.register(BriefInformationTableViewCell.self, forCellReuseIdentifier: BriefInformationTableViewCell.identifier)
         tableView.register(SummaryInformationTableViewCell.self, forCellReuseIdentifier: SummaryInformationTableViewCell.identifier)
+        tableView.register(NewFeaturesTableViewCell.self, forCellReuseIdentifier: NewFeaturesTableViewCell.identifier)
+        tableView.register(PreviewTableViewCell.self, forCellReuseIdentifier: PreviewTableViewCell.identifier)
+        
+        //section 정보 생성
         createSectionAndRow()
     }
     
+    
     func createSectionAndRow() {
-        self.sectionAndRow[.SummaryInfo] = 2
-        self.sectionAndRow[.NewFunction] = 1
-        self.sectionAndRow[.PreView] = 1
+        self.sectionAndRow[.SummaryInfo] = (open: 2, fold: 0, isOpen: true)
+        self.sectionAndRow[.NewFeatures] = (open: 1, fold: 0, isOpen: false)
+        self.sectionAndRow[.PreView] = (open: 1, fold: 0, isOpen: false)
+        
+        self.sectionName[.SummaryInfo] = .SummaryInfo
+        self.sectionName[.NewFeatures] = .NewFeatures
+        self.sectionName[.PreView] = .PreView
     }
 }
 
 
+
+//MARK: - TableViewDelegate
 extension AppDetailViewController: UITableViewDelegate, UITableViewDataSource {
     
     func numberOfSections(in tableView: UITableView) -> Int {
         return self.sectionAndRow.count
     }
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        switch Section.init(rawValue: section) {
-        case .SummaryInfo:
-            return 2
-        case .NewFunction:
-            return 1
-        case .PreView:
-            return 1
-        case .none:
-            return 0
+        
+        guard let sectionType = Section.init(rawValue: section) else { return 0 }
+        guard let row = self.sectionAndRow[sectionType] else { return 0 }
+        
+        if true == row.isOpen {
+            return row.open
+        } else {
+            return row.fold
         }
     }
-//https://apps.apple.com/kr/app/alphado-pet/id1551755698
+    
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let dummyCell = UITableViewCell()
@@ -147,24 +168,91 @@ extension AppDetailViewController: UITableViewDelegate, UITableViewDataSource {
                 resultCell = cell
             }
             break
-        case .NewFunction: break
-        case .PreView: break
+        case .NewFeatures:
+            let cell = tableView.dequeueReusableCell(withIdentifier: NewFeaturesTableViewCell.identifier) as? NewFeaturesTableViewCell
+            let version = "버전 \(responseData.results[0].version)"
+            
+            let dateFormatter = ISO8601DateFormatter()
+            
+            var days: Int?
+            if let versionDate = dateFormatter.date(from: responseData.results[0].currentVersionReleaseDate) {
+                let currentDate = Date()
+                let interval = currentDate.timeIntervalSince(versionDate)
+                days = Int(interval / 86400)
+            }
+            
+            let versionDate = days != nil ? "\(days!)일 전" : responseData.results[0].currentVersionReleaseDate
+            
+            let newFeatures = responseData.results[0].releaseNotes
+            
+            cell?.configuration(version: version, versionDate: versionDate, newFeatures: newFeatures)
+            
+            resultCell = cell
+            break
+        case .PreView:
+            let cell = tableView.dequeueReusableCell(withIdentifier: PreviewTableViewCell.identifier) as? PreviewTableViewCell
+            
+            cell?.configuration(imageUrlStrings: responseData.results[0].screenshotUrls)
+            resultCell = cell
+            break
         case .none: break
         }
         
         return resultCell ?? dummyCell
     }
     
+    
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        
+        let noneView = UIView(frame: CGRect(origin: .zero, size: CGSize(width: 0.1, height: 0.1)))
         if section == 0 {
-            return UIView(frame: CGRect(origin: .zero, size: CGSize(width: 0.1, height: 0.1)))
+            return noneView
         } else {
             let headerView = HeaderViewOfAppDetailTableView()
-            headerView.titleLabel.text = "새로운 기능"
-            headerView.anyButton.setTitle("버전 기록", for: .normal)
+            
+            guard let sectionType = Section(rawValue: section) else {
+                return noneView
+            }
+            
+            guard let sectionName = self.sectionName[sectionType] else {
+                return noneView
+            }
+            
+            guard let row = self.sectionAndRow[sectionType] else {
+                return noneView
+            }
+            
+            headerView.titleLabel.text = sectionName.rawValue
+            headerView.anyButton.setTitle(row.isOpen == true ? "접기" : "펼치기", for: .normal)
+            //tag에 section 번호를 저장해야 버튼 터치 이벤트를 처리할 수 있다.
+            headerView.anyButton.tag = section
+            headerView.delegate = self
             return headerView
         }
     }
     
 }
 
+
+
+//MARK: - HeaderViewDelegate
+extension AppDetailViewController: HeaderViewOfAppDetailDelegate {
+    
+    /// '펼치기' 또는 '접기' 버튼 터치 이벤트
+    /// tableView delegate메서드에서 anyButton의 tag에 section 번호를 저장해 두었다.
+    /// - Parameter sender: 버튼
+    func touchAnyButton(_ sender: UIButton) {
+        
+        guard let sectionType = Section.init(rawValue: sender.tag) else { return }
+        guard let row = self.sectionAndRow[sectionType] else { return }
+        
+        if true == row.isOpen {
+            self.sectionAndRow[sectionType]!.isOpen = false
+        } else {
+            self.sectionAndRow[sectionType]!.isOpen = true
+        }
+        
+        let indexSet = IndexSet(integer: IndexSet.Element(sender.tag))
+        self.tableView.reloadSections(indexSet, with: .automatic)
+    }
+}

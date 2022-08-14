@@ -133,32 +133,12 @@ class BriefInformationTableViewCell: UITableViewCell {
 
     func configuration(imageUrl: String, trackName: String, trackId: Int, developerName: String, imageHeight: CGFloat) {
         
-        imageDownload(urlString: imageUrl)
+        
+        self.appIconImageView.imageDownload(urlString: imageUrl)
         appTrackNameLabel.text = trackName
         developerNameLabel.text = developerName
         imageHeightConstraint.constant = imageHeight
         appStoreOpenUrlString += "\(trackId)"
-    }
-    
-    
-    func imageDownload(urlString: String) {
-        guard let url = URL(string: urlString) else {
-            print("--error: url not available---")
-            return
-        }
-        
-        var request = URLRequest(url: url)
-        request.httpMethod = "GET"
-        URLSession.shared.dataTask(with: url) { data, response, error in
-            guard let httpUrlResponse = response as? HTTPURLResponse, httpUrlResponse.statusCode == 200, let mineType = response?.mimeType, mineType.hasPrefix("image"), let data = data, error == nil, let image = UIImage(data: data) else {
-                print("---error: image download fail---")
-                return
-            }
-            
-            DispatchQueue.main.async {
-                self.appIconImageView.image = image
-            }
-        }.resume()
     }
     
     

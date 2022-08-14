@@ -7,7 +7,13 @@
 
 import UIKit
 
+protocol HeaderViewOfAppDetailDelegate: AnyObject {
+    func touchAnyButton(_ sender: UIButton)
+}
+
 class HeaderViewOfAppDetailTableView: UIView {
+    
+    var delegate: HeaderViewOfAppDetailDelegate?
     
     let titleLabel: UILabel = {
         let lbl = UILabel()
@@ -35,6 +41,9 @@ class HeaderViewOfAppDetailTableView: UIView {
     }
     
     func commonInit() {
+        
+        anyButton.addTarget(self, action: #selector(touchAnyButton(_:)), for: .touchUpInside)
+        
         self.addSubview(titleLabel)
         self.addSubview(anyButton)
         
@@ -43,9 +52,14 @@ class HeaderViewOfAppDetailTableView: UIView {
         titleLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: margin).isActive = true
         titleLabel.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -margin).isActive = true
         
-        anyButton.leadingAnchor.constraint(equalTo: titleLabel.trailingAnchor, constant: margin).isActive = true
+        anyButton.leadingAnchor.constraint(greaterThanOrEqualTo: titleLabel.trailingAnchor, constant: margin).isActive = true
+        anyButton.topAnchor.constraint(equalTo: self.topAnchor, constant: margin).isActive = true
         anyButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -margin).isActive = true
         anyButton.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -margin).isActive = true
+    }
+    
+    @objc func touchAnyButton(_ sender: UIButton) {
+        delegate?.touchAnyButton(sender)
     }
 
 }

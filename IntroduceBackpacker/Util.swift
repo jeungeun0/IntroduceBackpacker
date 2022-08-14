@@ -47,4 +47,24 @@ public class Util {
         return alert
     }
     
+    
+    func imageDownload(urlString: String, completion: ((_ image: UIImage)->Void)?) {
+        guard let url = URL(string: urlString) else {
+            print("--error: url not available---")
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        URLSession.shared.dataTask(with: url) { data, response, error in
+            guard let httpUrlResponse = response as? HTTPURLResponse, httpUrlResponse.statusCode == 200, let mineType = response?.mimeType, mineType.hasPrefix("image"), let data = data, error == nil, let image = UIImage(data: data) else {
+                print("---error: image download fail---")
+                return
+            }
+            
+            completion?(image)
+            
+        }.resume()
+    }
+    
 }
