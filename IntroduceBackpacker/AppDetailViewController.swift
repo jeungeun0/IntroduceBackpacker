@@ -61,6 +61,7 @@ class AppDetailViewController: UIViewController {
     func configurationTableView() {
         tableView.delegate = self
         tableView.dataSource = self
+        tableView.isUserInteractionEnabled = true
         tableView.register(BriefInformationTableViewCell.self, forCellReuseIdentifier: BriefInformationTableViewCell.identifier)
     }
 }
@@ -78,7 +79,9 @@ extension AppDetailViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let dummyCell = UITableViewCell()
         let cell = tableView.dequeueReusableCell(withIdentifier: BriefInformationTableViewCell.identifier) as? BriefInformationTableViewCell
-        cell?.configuration(imageUrl: responseData.results[0].artworkUrl512, trackName: responseData.results[0].trackName, imageHeight: 150)
+        let appImageHeight = UIScreen.main.bounds.size.width * 0.3
+        cell?.configuration(imageUrl: responseData.results[0].artworkUrl512, trackName: responseData.results[0].trackName, trackId: responseData.results[0].trackId, developerName: responseData.results[0].sellerName, imageHeight: appImageHeight)
         return cell ?? dummyCell
     }
 }
+
