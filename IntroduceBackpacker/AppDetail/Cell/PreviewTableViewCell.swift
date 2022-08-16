@@ -90,11 +90,11 @@ class PreviewTableViewCell: UITableViewCell {
             Util.shared.imageDownload(urlString: imageUrlString) { image in
                 let newImage = image.resizeImage(newWidth: UIScreen.main.bounds.size.width * 0.7)
                 self.images[index] = newImage
-                
+
                 DispatchQueue.main.async {
                     self.collectionView.reloadItems(at: [IndexPath(row: index, section: 0)])
                 }
-                
+
             }
         }
         
@@ -106,28 +106,27 @@ class PreviewTableViewCell: UITableViewCell {
 
 extension PreviewTableViewCell: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        self.images.count
+        self.imageUrlStrings.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let dummyCell = UICollectionViewCell()
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PreviewCollectionViewCell.identifier, for: indexPath) as? PreviewCollectionViewCell
         guard let image = self.images[indexPath.row] else {
-            return dummyCell
+            return cell!
         }
         cell?.configuration(delegate: delegate, image: image)
-        return cell ?? dummyCell
+        return cell!
     }
     
     // 페이징
     func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
         let layout = self.collectionView.collectionViewLayout as! UICollectionViewFlowLayout
         let itemWidth = layout.itemSize.width + layout.minimumLineSpacing
-        
+
         var offset = targetContentOffset.pointee
         let index = (offset.x + scrollView.contentInset.left) / itemWidth
         var roundedIndex = round(index)
-        
+
         if scrollView.contentOffset.x > targetContentOffset.pointee.x {
             roundedIndex = floor(index)
         } else if scrollView.contentOffset.x < targetContentOffset.pointee.x {
@@ -135,7 +134,7 @@ extension PreviewTableViewCell: UICollectionViewDelegate, UICollectionViewDataSo
         } else {
             roundedIndex = round(index)
         }
-        
+
         if currentIndex > roundedIndex {
             currentIndex -= 1
             roundedIndex = currentIndex
@@ -143,7 +142,7 @@ extension PreviewTableViewCell: UICollectionViewDelegate, UICollectionViewDataSo
             currentIndex += 1
             roundedIndex = currentIndex
         }
-        
+
         offset = CGPoint(x: roundedIndex * itemWidth - scrollView.contentInset.left, y: -scrollView.contentInset.top)
         targetContentOffset.pointee = offset
     }

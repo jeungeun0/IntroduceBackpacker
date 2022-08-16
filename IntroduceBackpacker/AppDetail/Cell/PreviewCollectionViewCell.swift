@@ -26,6 +26,8 @@ class PreviewCollectionViewCell: UICollectionViewCell {
         return imgV
     }()
     
+    
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         commonInit()
@@ -39,6 +41,15 @@ class PreviewCollectionViewCell: UICollectionViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        //재사용 시 이미지를 초기값으로 셋팅
+        self.previewImageView.image = UIImage(systemName: "photo.on.rectangle.angled")
+        self.previewImageView.contentMode = .center
+    }
+    
+    
     
     func commonInit() {
         
@@ -60,9 +71,6 @@ class PreviewCollectionViewCell: UICollectionViewCell {
         if let image = image {
             self.previewImageView.image = image
             self.previewImageView.contentMode = .scaleToFill
-        } else {
-            self.previewImageView.image = UIImage(systemName: "photo.on.rectangle.angled")
-            self.previewImageView.contentMode = .center
         }
         
     }
