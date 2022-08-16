@@ -149,7 +149,11 @@ extension AppDetailViewController: UITableViewDelegate, UITableViewDataSource {
             if 0 == indexPath.row {
                 let cell = tableView.dequeueReusableCell(withIdentifier: BriefInformationTableViewCell.identifier) as? BriefInformationTableViewCell
                 let appImageHeight = UIScreen.main.bounds.size.width * 0.3
-                cell?.configuration(imageUrl: responseData.results[0].artworkUrl512, trackName: responseData.results[0].trackName, trackId: responseData.results[0].trackId, developerName: responseData.results[0].sellerName, imageHeight: appImageHeight)
+                cell?.configuration(imageUrl: responseData.results[0].artworkUrl512,
+                                    trackName: responseData.results[0].trackName,
+                                    developerName: responseData.results[0].sellerName,
+                                    imageHeight: appImageHeight,
+                                    appStoreOpenUrlString: responseData.results[0].trackViewUrl)
                 
                 resultCell = cell
             }

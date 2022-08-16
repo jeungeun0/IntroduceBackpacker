@@ -83,9 +83,7 @@ class BriefInformationTableViewCell: UITableViewCell {
     
     func commonInit() {
         
-        appStoreOpenUrlString = "https://itunes.apple.com/app/id"
         openButton.addTarget(self, action: #selector(openAppStore(_:)), for: .touchUpInside)
-        
         
         self.contentView.addSubview(appIconImageView)
         self.contentView.addSubview(appTrackNameLabel)
@@ -131,14 +129,14 @@ class BriefInformationTableViewCell: UITableViewCell {
     }
 
 
-    func configuration(imageUrl: String, trackName: String, trackId: Int, developerName: String, imageHeight: CGFloat) {
+    func configuration(imageUrl: String, trackName: String, developerName: String, imageHeight: CGFloat, appStoreOpenUrlString: String) {
         
         
         self.appIconImageView.imageDownload(urlString: imageUrl)
         appTrackNameLabel.text = trackName
         developerNameLabel.text = developerName
         imageHeightConstraint.constant = imageHeight
-        appStoreOpenUrlString += "\(trackId)"
+        self.appStoreOpenUrlString = appStoreOpenUrlString
     }
     
     
