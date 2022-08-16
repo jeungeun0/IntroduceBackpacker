@@ -7,8 +7,13 @@
 
 import UIKit
 
+protocol PreviewImageDelegate: AnyObject {
+    func tappedImageView(image: UIImage)
+}
+
 class PreviewCollectionViewCell: UICollectionViewCell {
     static let identifier: String = "SummaryInformationCollectionViewCell"
+    private var delegate: PreviewImageDelegate?
     
     let previewImageView: UIImageView = {
         let imgV = UIImageView()
@@ -17,6 +22,7 @@ class PreviewCollectionViewCell: UICollectionViewCell {
         imgV.layer.cornerRadius = 15
         imgV.layer.borderWidth = 1
         imgV.layer.borderColor = UIColor.systemGray4.cgColor
+        imgV.isUserInteractionEnabled = true
         return imgV
     }()
     
@@ -43,10 +49,13 @@ class PreviewCollectionViewCell: UICollectionViewCell {
         previewImageView.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor).isActive = true
         previewImageView.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor).isActive = true
         
-        
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tappedImageView(_:)))
+        self.previewImageView.addGestureRecognizer(tapGesture)
     }
     
-    func configuration(image: UIImage?) {
+    func configuration(delegate: PreviewImageDelegate, image: UIImage?) {
+        
+        self.delegate = delegate
         
         if let image = image {
             self.previewImageView.image = image
@@ -57,4 +66,14 @@ class PreviewCollectionViewCell: UICollectionViewCell {
         }
         
     }
+    
+    @objc func tappedImageView(_ sender: UITapGestureRecognizer) {
+        print("---tapped imageView---")
+        
+        guard let image = self.previewImageView.image else {
+            return
+        }
+        delegate?.tappedImageView(image: image)
+    }
+    
 }

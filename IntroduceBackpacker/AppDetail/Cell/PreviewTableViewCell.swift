@@ -6,11 +6,12 @@
 //
 
 import UIKit
-import Combine
 
 class PreviewTableViewCell: UITableViewCell {
 
     static let identifier: String = "PreviewTableViewCell"
+    
+    private var delegate: PreviewImageDelegate!
     
     let collectionView: UICollectionView = {
         
@@ -78,8 +79,10 @@ class PreviewTableViewCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
-    func configuration(imageUrlStrings: [String]) {
+    func configuration(delegate: PreviewImageDelegate, imageUrlStrings: [String]) {
         self.imageUrlStrings = imageUrlStrings
+        
+        self.delegate = delegate
         
         collectionViewHeightConstraint.constant = UIScreen.main.bounds.size.height * 0.7
         
@@ -112,7 +115,7 @@ extension PreviewTableViewCell: UICollectionViewDelegate, UICollectionViewDataSo
         guard let image = self.images[indexPath.row] else {
             return dummyCell
         }
-        cell?.configuration(image: image)
+        cell?.configuration(delegate: delegate, image: image)
         return cell ?? dummyCell
     }
     

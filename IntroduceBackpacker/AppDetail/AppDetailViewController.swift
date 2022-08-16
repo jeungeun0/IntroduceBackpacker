@@ -7,23 +7,31 @@
 
 import UIKit
 
+
+/// section을 새롭게 추가하려면, 열거형 Section, SectionName에 등록하고, createSectionAndRow 메서드에서 row와 flod여부 등을 설정해야 한다. delegate 함수에서 headerView를 만드는 것도 잊지 말아야 함
+/// row를 새롭게 추가하려면(section에는 적용되어 있다고 가정하고), 함수 configurationTableView에서 새로운 셀을 register하고, delegate 함수에서 적절한 section에 해당 셀을 만들어서 return해야 함
 class AppDetailViewController: UIViewController {
     
-    //section과 순서
+    //section 순서 설정
     enum Section: Int {
         case SummaryInfo = 0
         case NewFeatures = 1
         case PreView = 2
+        case IntroduceAndDeveloper = 3
     }
     
+    //section header 이름 설정
     enum SectionName: String {
         case SummaryInfo
         case NewFeatures = "새로운 기능"
         case PreView = "미리보기"
+        case IntroduceAndDeveloper
     }
     
     //app data
     let responseData: Response
+    //앱 소개글에서 더보기 버튼이 보일것인지 아닌지의 Bool값을 저장
+    var isIntroduceMoreButton: Bool = true
     
     //section정보
     typealias OpenAndFold = (open:Int, fold: Int, isOpen: Bool)
@@ -79,6 +87,7 @@ class AppDetailViewController: UIViewController {
     }
     
     
+    //tableView를 셋팅한다.
     func configurationTableView() {
         tableView.delegate = self
         tableView.dataSource = self
@@ -91,6 +100,7 @@ class AppDetailViewController: UIViewController {
         tableView.register(SummaryInformationTableViewCell.self, forCellReuseIdentifier: SummaryInformationTableViewCell.identifier)
         tableView.register(NewFeaturesTableViewCell.self, forCellReuseIdentifier: NewFeaturesTableViewCell.identifier)
         tableView.register(PreviewTableViewCell.self, forCellReuseIdentifier: PreviewTableViewCell.identifier)
+        tableView.register(IntroduceTableViewCell.self, forCellReuseIdentifier: IntroduceTableViewCell.identifier)
         
         //section 정보 생성
         createSectionAndRow()
@@ -101,6 +111,7 @@ class AppDetailViewController: UIViewController {
         self.sectionAndRow[.SummaryInfo] = (open: 2, fold: 0, isOpen: true)
         self.sectionAndRow[.NewFeatures] = (open: 1, fold: 0, isOpen: false)
         self.sectionAndRow[.PreView] = (open: 1, fold: 0, isOpen: false)
+        self.sectionAndRow[.IntroduceAndDeveloper] = (open: 2, fold: 0, isOpen: true)
         
         self.sectionName[.SummaryInfo] = .SummaryInfo
         self.sectionName[.NewFeatures] = .NewFeatures
@@ -192,12 +203,27 @@ extension AppDetailViewController: UITableViewDelegate, UITableViewDataSource {
         case .PreView:
             let cell = tableView.dequeueReusableCell(withIdentifier: PreviewTableViewCell.identifier) as? PreviewTableViewCell
             
-            cell?.configuration(imageUrlStrings: responseData.results[0].screenshotUrls)
+            cell?.configuration(delegate: self, imageUrlStrings: responseData.results[0].screenshotUrls)
             resultCell = cell
             break
+            
+        case .IntroduceAndDeveloper:
+            
+            let cell = tableView.dequeueReusableCell(withIdentifier: IntroduceTableViewCell.identifier) as? IntroduceTableViewCell
+            
+            cell?.configuration(introduceText: responseData.results[0].description,
+                                indexPath: indexPath,
+                                isMoreButton: self.isIntroduceMoreButton,
+                                normalLine: 3)
+            
+            cell?.delegate = self
+            resultCell = cell
+            break
+            
         case .none: break
         }
         
+        resultCell?.selectionStyle = .none
         return resultCell ?? dummyCell
     }
     
@@ -205,7 +231,7 @@ extension AppDetailViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         
         let noneView = UIView(frame: CGRect(origin: .zero, size: CGSize(width: 0.1, height: 0.1)))
-        if section == 0 {
+        if section == 0 || section == 3 {
             return noneView
         } else {
             let headerView = HeaderViewOfAppDetailTableView()
@@ -254,5 +280,33 @@ extension AppDetailViewController: HeaderViewOfAppDetailDelegate {
         
         let indexSet = IndexSet(integer: IndexSet.Element(sender.tag))
         self.tableView.reloadSections(indexSet, with: .automatic)
+    }
+}
+
+
+
+//MARK: - PreviewImageDelegate
+extension AppDetailViewController: PreviewImageDelegate {
+    func tappedImageView(image: UIImage) {
+        let storyboard = UIStoryboard(name: "ImageViewer", bundle: nil)
+        
+        let imageViewerVC = storyboard.instantiateViewController(identifier: "ImageViewer") { coder in
+            ImageViewerViewController(image: image, coder: coder)
+        }
+        
+        imageViewerVC.modalPresentationStyle = .fullScreen
+        
+        self.present(imageViewerVC, animated: true)
+    }
+    
+}
+
+
+
+//MARK: - IntroduceDelegate
+extension AppDetailViewController: IntroduceDelegate {
+    func tappedMoreButton(_ indexPath: IndexPath) {
+        self.isIntroduceMoreButton = !self.isIntroduceMoreButton
+        self.tableView.reloadRows(at: [indexPath], with: .none)
     }
 }
