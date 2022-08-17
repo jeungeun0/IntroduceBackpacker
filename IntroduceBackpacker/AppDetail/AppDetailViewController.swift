@@ -169,42 +169,43 @@ class AppDetailViewController: UIViewController {
         //데이터가 2개 보다 많으면 summary와 detail정보를 나누어서 저장한다.
         //summary example: 한국어 외 14개
         //detail example: 한국어, 독일어, 러시아어, ...
-        if responseData.results[0].languageCodesISO2A.count > 2 {
+        if languageCodesISO2A.count > 2 {
             
-            addFirstLanguageString(&summary, languageCodes: responseData.results[0].languageCodesISO2A)
+            addFirstLanguageString(&summary, languageCodes: languageCodesISO2A)
             
             if false == summary.isEmptyWithNoSpaces() {
                 
                 if let appendedCodeInSummary = Language.getLanguageCode(summary) {
                     detail += summary
-                    responseData.results[0].languageCodesISO2A.forEach { item in
+                    languageCodesISO2A.forEach { item in
                         if item.uppercased() != appendedCodeInSummary.rawValue.uppercased() {
                             detail += ", "
                             self.addLanguageStringAt(&detail, languageCode: item)
                         }
                     }
                 } else {
-                    responseData.results[0].languageCodesISO2A.enumerated().forEach { index, item in
+                    languageCodesISO2A.enumerated().forEach { index, item in
                         self.addLanguageStringAt(&detail, languageCode: item)
-                        detail += (index != responseData.results[0].languageCodesISO2A.count - 1) ? ", " : ""
+                        detail += (index != languageCodesISO2A.count - 1) ? ", " : ""
                     }
                 }
-                summary += " 외 \(responseData.results[0].languageCodesISO2A.count - 1)개"
+                summary += " 외 \(languageCodesISO2A.count - 1)개"
             }
             
         }
         //데이터가 2개 이하이면 summary에만 데이터를 저장한다.
         else {
             //첫번째 코드를 저장
-            addFirstLanguageString(&summary, languageCodes: responseData.results[0].languageCodesISO2A)
+            addFirstLanguageString(&summary, languageCodes: languageCodesISO2A)
             
             //첫번째 코드가 저장되었고, 데이터가 2개라면: 두번째 코드를 저장한다.
             //첫번째 코드가 저장되어 있지 않거나 데이터가 1개라면: 아무것도 하지 않는다.
-            if false == summary.isEmptyWithNoSpaces() && responseData.results[0].languageCodesISO2A.count > 1 {
+            if false == summary.isEmptyWithNoSpaces() && languageCodesISO2A.count > 1 {
                 summary += ", "
                 
-                let firstElement = responseData.results[0].languageCodesISO2A[0]
-                let secondElement = responseData.results[0].languageCodesISO2A[1]
+                let firstElement = languageCodesISO2A[languageCodesISO2A.startIndex]
+                let secondElement = languageCodesISO2A[languageCodesISO2A.endIndex]
+                
                 if summary == firstElement {
                     addLanguageStringAt(&summary, languageCode: secondElement)
                 } else {
@@ -404,7 +405,7 @@ extension AppDetailViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     
-    func addFirstLanguageString(_ with: inout String, languageCodes: [String]) {
+    func addFirstLanguageString(_ with: inout String, languageCodes: Set<String>) {
         
         //전달 된 languageCodes의 개수가 0보다 커야하고
         //languageCodes의 첫번째 코드가 빈 문자열이 아니어야 한다.
