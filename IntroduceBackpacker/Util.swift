@@ -67,4 +67,32 @@ public class Util {
         }.resume()
     }
     
+    enum ByteType: String {
+        case KB, MB, GB
+    }
+    
+    func convertBytes(bytes: Int64, toByteType: ByteType) -> String {
+      
+        var kilobytes: Double {
+            return Double(bytes) / 1_024
+        }
+        
+        var megabytes: Double {
+            return kilobytes / 1_024
+        }
+        
+        var gigabytes: Double {
+            return megabytes / 1_024
+        }
+        
+        switch toByteType {
+        case .KB:
+            return "\(String(format: "%.2f", kilobytes))\(toByteType.rawValue)"
+        case .MB:
+            return "\(String(format: "%.2f", megabytes))\(toByteType.rawValue)"
+        case .GB:
+            return "\(String(format: "%.2f", gigabytes))\(toByteType.rawValue)"
+        }
+    }
+    
 }

@@ -8,21 +8,31 @@
 import UIKit
 
 class PreviewTableViewCell: UITableViewCell {
+    
+    enum PreviewDeviceType: String {
+        case iPhone = "iPhone용 앱"
+        case iPad = "iPad용 앱"
+    }
 
     static let identifier: String = "PreviewTableViewCell"
     
     private var delegate: PreviewImageDelegate!
     
+    let deviceTypeLabel: UILabel = {
+       let lbl = UILabel()
+        lbl.translatesAutoresizingMaskIntoConstraints = false
+        return lbl
+    }()
+    
     let collectionView: UICollectionView = {
-        
         let layout = UICollectionViewFlowLayout()
-        layout.minimumLineSpacing = 10
         
         layout.scrollDirection = .horizontal
         layout.sectionInset = UIEdgeInsets(top: 0, left: 24, bottom: 0, right: 24)
         
         layout.estimatedItemSize = CGSize(width: UIScreen.main.bounds.size.width * 0.7, height: UIScreen.main.bounds.size.height * 0.7)
         layout.itemSize = CGSize(width: UIScreen.main.bounds.size.width * 0.7, height: UIScreen.main.bounds.size.height * 0.7)
+        layout.minimumLineSpacing = 10
         
         let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
         cv.translatesAutoresizingMaskIntoConstraints = false
@@ -36,6 +46,7 @@ class PreviewTableViewCell: UITableViewCell {
     
     var imageUrlStrings: [String] = []
     var images: [Int: UIImage] = [:]
+    let margin: CGFloat = 10
     
     // 현재 페이지 인덱스
     var currentIndex: CGFloat = 0
@@ -58,11 +69,17 @@ class PreviewTableViewCell: UITableViewCell {
     func commonInit() {
         
         self.contentView.addSubview(collectionView)
+        self.contentView.addSubview(deviceTypeLabel)
         
         collectionView.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor).isActive = true
         collectionView.topAnchor.constraint(equalTo: self.contentView.topAnchor).isActive = true
         collectionView.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor).isActive = true
-        collectionView.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor).isActive = true
+//        collectionView.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor).isActive = true
+        
+        deviceTypeLabel.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: margin).isActive = true
+        deviceTypeLabel.topAnchor.constraint(equalTo: collectionView.bottomAnchor, constant: margin).isActive = true
+        deviceTypeLabel.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: -margin).isActive = true
+        deviceTypeLabel.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: -margin).isActive = true
         
         collectionView.register(PreviewCollectionViewCell.self, forCellWithReuseIdentifier: PreviewCollectionViewCell.identifier)
         collectionView.delegate = self
@@ -79,20 +96,32 @@ class PreviewTableViewCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
-    func configuration(delegate: PreviewImageDelegate, imageUrlStrings: [String]) {
+    func configuration(delegate: PreviewImageDelegate, imageUrlStrings: [String], deviceType: PreviewDeviceType) {
+        
+        self.deviceTypeLabel.text = deviceType.rawValue
+        
         self.imageUrlStrings = imageUrlStrings
         
         self.delegate = delegate
         
-        collectionViewHeightConstraint.constant = UIScreen.main.bounds.size.height * 0.7
+        let scale = UIScreen.main.bounds.size.width * 0.7 / UIScreen.main.bounds.size.width // 비율
+        let newHeight = UIScreen.main.bounds.size.height * scale
+        collectionViewHeightConstraint.constant = newHeight
+//        collectionViewHeightConstraint.constant = UIScreen.main.bounds.size.height * 0.7
         
-        imageUrlStrings.enumerated().forEach { index, imageUrlString in
+        imageUrlStrings.enumerated().forEach { [weak self] index, imageUrlString in
             Util.shared.imageDownload(urlString: imageUrlString) { image in
                 let newImage = image.resizeImage(newWidth: UIScreen.main.bounds.size.width * 0.7)
-                self.images[index] = newImage
-
+                self?.images[index] = newImage
+                
                 DispatchQueue.main.async {
-                    self.collectionView.reloadItems(at: [IndexPath(row: index, section: 0)])
+                    if newImage != nil {
+                        self?.collectionViewHeightConstraint.constant = newImage!.size.height
+                        self?.setNeedsLayout()
+                        self?.setNeedsDisplay()
+                    }
+                    
+                    self?.collectionView.reloadItems(at: [IndexPath(row: index, section: 0)])
                 }
 
             }

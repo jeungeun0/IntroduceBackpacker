@@ -18,6 +18,7 @@ class AppDetailViewController: UIViewController {
         case NewFeatures = 1
         case PreView = 2
         case IntroduceAndDeveloper = 3
+        case OtherInformations = 4
     }
     
     //section header 이름 설정
@@ -26,17 +27,25 @@ class AppDetailViewController: UIViewController {
         case NewFeatures = "새로운 기능"
         case PreView = "미리보기"
         case IntroduceAndDeveloper
+        case OtherInformations
     }
+    
+    typealias OtherData = OtherInformationTableViewCell.OtherInfoData
     
     //app data
     let responseData: Response
     //앱 소개글에서 더보기 버튼이 보일것인지 아닌지의 Bool값을 저장
     var isIntroduceMoreButton: Bool = true
+    //기타정보의 더보기 버튼이 보일것인지 아닌지의 Bool값
+    var isOtherInformationMoreButton: [IndexPath:Bool] = [:]
     
     //section정보
     typealias OpenAndFold = (open:Int, fold: Int, isOpen: Bool)
     var sectionAndRow: [Section: OpenAndFold] = [:]
     var sectionName: [Section: SectionName] = [:]
+    
+    //other information정보
+    var otherInformationData: [(String, OtherData)] = []
     
     var tableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .grouped)
@@ -61,8 +70,8 @@ class AppDetailViewController: UIViewController {
 
         print(responseData)
         setUI()
+        otherInformationDataConfiguration()
         configurationTableView()
-        
     }
     
     
@@ -101,6 +110,8 @@ class AppDetailViewController: UIViewController {
         tableView.register(NewFeaturesTableViewCell.self, forCellReuseIdentifier: NewFeaturesTableViewCell.identifier)
         tableView.register(PreviewTableViewCell.self, forCellReuseIdentifier: PreviewTableViewCell.identifier)
         tableView.register(IntroduceTableViewCell.self, forCellReuseIdentifier: IntroduceTableViewCell.identifier)
+//        tableView.register(OtherInformationTableViewCell.self, forCellReuseIdentifier: OtherInformationTableViewCell.identifier)
+        tableView.register(OtherInformationTableViewCell.self, forCellReuseIdentifier: OtherInformationTableViewCell.identifier)
         
         //section 정보 생성
         createSectionAndRow()
@@ -110,12 +121,107 @@ class AppDetailViewController: UIViewController {
     func createSectionAndRow() {
         self.sectionAndRow[.SummaryInfo] = (open: 2, fold: 0, isOpen: true)
         self.sectionAndRow[.NewFeatures] = (open: 1, fold: 0, isOpen: false)
-        self.sectionAndRow[.PreView] = (open: 1, fold: 0, isOpen: false)
-        self.sectionAndRow[.IntroduceAndDeveloper] = (open: 2, fold: 0, isOpen: true)
+        if responseData.results[0].ipadScreenshotUrls.count > 0 {
+            self.sectionAndRow[.PreView] = (open: 2, fold: 0, isOpen: false)
+        } else {
+            self.sectionAndRow[.PreView] = (open: 1, fold: 0, isOpen: false)
+        }
+        self.sectionAndRow[.IntroduceAndDeveloper] = (open: 1, fold: 0, isOpen: true)
+        self.sectionAndRow[.OtherInformations] = (open: self.otherInformationData.count, fold: 0, isOpen: true)
         
         self.sectionName[.SummaryInfo] = .SummaryInfo
         self.sectionName[.NewFeatures] = .NewFeatures
         self.sectionName[.PreView] = .PreView
+    }
+    
+    func otherInformationDataConfiguration() {
+        var data: [(String, OtherData)] = []
+        
+        if false == responseData.results[0].trackContentRating.isEmptyWithNoSpaces() {
+            data.append(("연령 등급", OtherData(summaryText: responseData.results[0].trackContentRating, detailText: "")))
+        }
+        if false == responseData.results[0].sellerName.isEmptyWithNoSpaces() {
+            data.append(("제공자", OtherData(summaryText: responseData.results[0].sellerName, detailText: "")))
+        }
+        if false == responseData.results[0].fileSizeBytes.isEmptyWithNoSpaces() {
+            if let bytes = Int64(responseData.results[0].fileSizeBytes) {
+                data.append(("크기", OtherData(summaryText: Util.shared.convertBytes(bytes: bytes, toByteType: .MB), detailText: "")))
+            } else {
+                data.append(("크기", OtherData(summaryText: responseData.results[0].fileSizeBytes + " bytes", detailText: "")))
+            }
+            
+        }
+        if false == responseData.results[0].primaryGenreName.isEmptyWithNoSpaces() {
+            data.append(("카테고리", OtherData(summaryText: responseData.results[0].primaryGenreName, detailText: "")))
+        }
+        if false == responseData.results[0].minimumOsVersion.isEmptyWithNoSpaces() {
+            data.append(("호환성", OtherData(summaryText: responseData.results[0].minimumOsVersion, detailText: "")))
+        }
+        
+        var summary = ""
+        var detail = ""
+        var languageCodesISO2A: Set<String> = []
+        
+        for code in responseData.results[0].languageCodesISO2A {
+            _ = languageCodesISO2A.insert(code)
+        }
+        
+        //데이터가 2개 보다 많으면 summary와 detail정보를 나누어서 저장한다.
+        //summary example: 한국어 외 14개
+        //detail example: 한국어, 독일어, 러시아어, ...
+        if responseData.results[0].languageCodesISO2A.count > 2 {
+            
+            addFirstLanguageString(&summary, languageCodes: responseData.results[0].languageCodesISO2A)
+            
+            if false == summary.isEmptyWithNoSpaces() {
+                
+                if let appendedCodeInSummary = Language.getLanguageCode(summary) {
+                    detail += summary
+                    responseData.results[0].languageCodesISO2A.forEach { item in
+                        if item.uppercased() != appendedCodeInSummary.rawValue.uppercased() {
+                            detail += ", "
+                            self.addLanguageStringAt(&detail, languageCode: item)
+                        }
+                    }
+                } else {
+                    responseData.results[0].languageCodesISO2A.enumerated().forEach { index, item in
+                        self.addLanguageStringAt(&detail, languageCode: item)
+                        detail += (index != responseData.results[0].languageCodesISO2A.count - 1) ? ", " : ""
+                    }
+                }
+                summary += " 외 \(responseData.results[0].languageCodesISO2A.count - 1)개"
+            }
+            
+        }
+        //데이터가 2개 이하이면 summary에만 데이터를 저장한다.
+        else {
+            //첫번째 코드를 저장
+            addFirstLanguageString(&summary, languageCodes: responseData.results[0].languageCodesISO2A)
+            
+            //첫번째 코드가 저장되었고, 데이터가 2개라면: 두번째 코드를 저장한다.
+            //첫번째 코드가 저장되어 있지 않거나 데이터가 1개라면: 아무것도 하지 않는다.
+            if false == summary.isEmptyWithNoSpaces() && responseData.results[0].languageCodesISO2A.count > 1 {
+                summary += ", "
+                
+                let firstElement = responseData.results[0].languageCodesISO2A[0]
+                let secondElement = responseData.results[0].languageCodesISO2A[1]
+                if summary == firstElement {
+                    addLanguageStringAt(&summary, languageCode: secondElement)
+                } else {
+                    addLanguageStringAt(&summary, languageCode: firstElement)
+                }
+            }
+        }
+        
+        if false == summary.isEmptyWithNoSpaces() {
+            data.append(("언어", OtherData(summaryText: summary, detailText: detail)))
+        }
+        
+        self.otherInformationData = data
+        
+        data.enumerated().forEach { index, item in
+            isOtherInformationMoreButton[IndexPath(row: index, section: Section.OtherInformations.rawValue)] = false
+        }
     }
 }
 
@@ -183,6 +289,7 @@ extension AppDetailViewController: UITableViewDelegate, UITableViewDataSource {
                 resultCell = cell
             }
             break
+            
         case .NewFeatures:
             let cell = tableView.dequeueReusableCell(withIdentifier: NewFeaturesTableViewCell.identifier) as? NewFeaturesTableViewCell
             let version = "버전 \(responseData.results[0].version)"
@@ -204,23 +311,44 @@ extension AppDetailViewController: UITableViewDelegate, UITableViewDataSource {
             
             resultCell = cell
             break
+            
         case .PreView:
             let cell = tableView.dequeueReusableCell(withIdentifier: PreviewTableViewCell.identifier) as? PreviewTableViewCell
             
-            cell?.configuration(delegate: self, imageUrlStrings: responseData.results[0].screenshotUrls)
+            if 0 == indexPath.row {
+                cell?.configuration(delegate: self, imageUrlStrings: responseData.results[0].screenshotUrls, deviceType: .iPhone)
+            } else {
+                cell?.configuration(delegate: self, imageUrlStrings: responseData.results[0].ipadScreenshotUrls, deviceType: .iPad)
+            }
+            
             resultCell = cell
             break
             
         case .IntroduceAndDeveloper:
+                let cell = tableView.dequeueReusableCell(withIdentifier: IntroduceTableViewCell.identifier) as? IntroduceTableViewCell
+                
+                cell?.configuration(introduceText: responseData.results[0].description,
+                                    indexPath: indexPath,
+                                    isMoreButton: self.isIntroduceMoreButton,
+                                    normalLine: 3)
+                
+                cell?.delegate = self
+                resultCell = cell
+            break
             
-            let cell = tableView.dequeueReusableCell(withIdentifier: IntroduceTableViewCell.identifier) as? IntroduceTableViewCell
+        case .OtherInformations:
+            /*
+             let cell = tableView.dequeueReusableCell(withIdentifier: OtherInformationTableViewCell.identifier) as? OtherInformationTableViewCell
+             
+             cell?.configuration(data)
+             */
             
-            cell?.configuration(introduceText: responseData.results[0].description,
-                                indexPath: indexPath,
-                                isMoreButton: self.isIntroduceMoreButton,
-                                normalLine: 3)
+            let cell = tableView.dequeueReusableCell(withIdentifier: OtherInformationTableViewCell.identifier) as? OtherInformationTableViewCell
             
             cell?.delegate = self
+            let data = self.otherInformationData[indexPath.row]
+            cell?.configuration(indexPath, categoryText: data.0, data: data.1, isFold: self.isOtherInformationMoreButton[indexPath] ?? false)
+            
             resultCell = cell
             break
             
@@ -235,7 +363,9 @@ extension AppDetailViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         
         let noneView = UIView(frame: CGRect(origin: .zero, size: CGSize(width: 0.1, height: 0.1)))
-        if section == 0 || section == 3 {
+        
+        
+        if section == Section.SummaryInfo.rawValue || section == Section.IntroduceAndDeveloper.rawValue || section == Section.OtherInformations.rawValue{
             return noneView
         } else {
             let headerView = HeaderViewOfAppDetailTableView()
@@ -258,6 +388,55 @@ extension AppDetailViewController: UITableViewDelegate, UITableViewDataSource {
             headerView.anyButton.tag = section
             headerView.delegate = self
             return headerView
+        }
+    }
+    
+    //with으로 들어온 String에 해당 언어코드(매개변수)를 {한국어}(추후 localization 가능)로 저장한다.
+    //열거형에 언어코드(매개변수)에 해당하는 {한국어}가 없으면 그냥 언어코드로 저장한다.
+    func addLanguageStringAt(_ with: inout String, languageCode: String) {
+        if let language = Language.init(rawValue: languageCode.lowercased()) {
+            let languageString = language.getLanguageString()
+            with += languageString
+        }
+        else {
+            with += languageCode.uppercased()
+        }
+    }
+    
+    
+    func addFirstLanguageString(_ with: inout String, languageCodes: [String]) {
+        
+        //전달 된 languageCodes의 개수가 0보다 커야하고
+        //languageCodes의 첫번째 코드가 빈 문자열이 아니어야 한다.
+        guard let firstLanguageCode = languageCodes.first, false == firstLanguageCode.isEmptyWithNoSpaces() else {
+            return
+        }
+        
+        var deviceLanguageCode = Locale.preferredLanguages[0].uppercased()
+        
+        deviceLanguageCode = true == deviceLanguageCode.contains("-") ? deviceLanguageCode.components(separatedBy: "-").first! : deviceLanguageCode
+        
+        //데이터가 대문자로 온다고 가정했을 때 작동한다.
+        if languageCodes.contains(deviceLanguageCode) {
+            addLanguageStringAt(&with, languageCode: deviceLanguageCode)
+            
+        } else {
+            //데이터가 소문자로 왔을 수도 있으니, 대문자로 바꿔서 다시 한번 확인한다.
+            var languageCodes: [String] = []
+            languageCodes.forEach { item in
+                languageCodes.append(item.uppercased())
+                
+            }
+            
+            //데이터에 기기의 언어코드가 있다면 summary에 기기에 해당하는 언어를 {한국어}로 저장하고
+            //기기의 언어코드가 없다면 첫번째 언어를 summary에 저장한다.
+            if languageCodes.contains(deviceLanguageCode) {
+                addLanguageStringAt(&with, languageCode: deviceLanguageCode)
+                
+            } else {
+                addLanguageStringAt(&with, languageCode: firstLanguageCode.lowercased())
+                
+            }
         }
     }
     
@@ -311,6 +490,19 @@ extension AppDetailViewController: PreviewImageDelegate {
 extension AppDetailViewController: IntroduceDelegate {
     func tappedMoreButton(_ indexPath: IndexPath) {
         self.isIntroduceMoreButton = !self.isIntroduceMoreButton
+        self.tableView.reloadRows(at: [indexPath], with: .none)
+    }
+}
+
+
+
+//MARK: - OtherInformationDelegate
+extension AppDetailViewController: OtherInformationDelegate {
+    func tappedOtherInformationMoreButton(_ indexPath: IndexPath) {
+        guard let isOtherInformationMoreButton = self.isOtherInformationMoreButton[indexPath] else {
+            return
+        }
+        self.isOtherInformationMoreButton[indexPath] = !isOtherInformationMoreButton
         self.tableView.reloadRows(at: [indexPath], with: .none)
     }
 }

@@ -36,6 +36,7 @@
 		8CD09D8F28A7008F0094000E /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CD09D8E28A7008F0094000E /* Model.swift */; };
 		8CD09D9128A70B7B0094000E /* AppDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CD09D9028A70B7B0094000E /* AppDetailViewController.swift */; };
 		8CD09D9428A717850094000E /* BriefInformationTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CD09D9328A717850094000E /* BriefInformationTableViewCell.swift */; };
+		8CD700B528ACDEA20080AC6C /* OtherInformationTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CD700B428ACDEA20080AC6C /* OtherInformationTableViewCell.swift */; };
 		8CDB927528AB403F00C40B71 /* AttrLogic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CDB927428AB403F00C40B71 /* AttrLogic.swift */; };
 /* End PBXBuildFile section */
 
@@ -90,6 +91,7 @@
 		8CD09D8E28A7008F0094000E /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
 		8CD09D9028A70B7B0094000E /* AppDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDetailViewController.swift; sourceTree = "<group>"; };
 		8CD09D9328A717850094000E /* BriefInformationTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BriefInformationTableViewCell.swift; sourceTree = "<group>"; };
+		8CD700B428ACDEA20080AC6C /* OtherInformationTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OtherInformationTableViewCell.swift; sourceTree = "<group>"; };
 		8CDB927428AB403F00C40B71 /* AttrLogic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttrLogic.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -242,6 +244,7 @@
 				8CB97DA628A95726007866DE /* PreviewTableViewCell.swift */,
 				8CB97DA828A95AA1007866DE /* PreviewCollectionViewCell.swift */,
 				8CB4D72728AA686700B6DEC7 /* IntroduceTableViewCell.swift */,
+				8CD700B428ACDEA20080AC6C /* OtherInformationTableViewCell.swift */,
 			);
 			path = Cell;
 			sourceTree = "<group>";
@@ -400,6 +403,7 @@
 				8CD09D8D28A700860094000E /* API.swift in Sources */,
 				8CD09D8F28A7008F0094000E /* Model.swift in Sources */,
 				8CB4D72C28AA991200B6DEC7 /* StringExtension.swift in Sources */,
+				8CD700B528ACDEA20080AC6C /* OtherInformationTableViewCell.swift in Sources */,
 				8CB4D72828AA686700B6DEC7 /* IntroduceTableViewCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -20,7 +20,7 @@ class SearchViewController: UIViewController {
         textField.placeholder = "App ID를 입력해주세요."
         textField.keyboardType = .numbersAndPunctuation
         //TODO: 제출 전 꼭 지우기
-        textField.text = "872469884"
+        textField.text = "544007664"
         return textField
     }()
     //검색 버튼
